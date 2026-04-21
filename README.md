@@ -70,7 +70,7 @@ python scanner/main.py \
 
 ## 📸 Sample Output
 
-![Sample Output](https://i.imgur.com/placeholder.png)
+![Sample Output](screenshot.png)
 
 ```
 [*] Running Prompt Injection Tests...
