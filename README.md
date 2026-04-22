@@ -87,8 +87,8 @@ python scanner/main.py \
 
 ## 📸 Sample Output
 
-![Sample Output](screenshot2.png)
-![Sample Output](screenshot3.png)
+![Sample Output](Screenshot2.png)
+![Sample Output](Screenshot3.png)
 
 ---
 
