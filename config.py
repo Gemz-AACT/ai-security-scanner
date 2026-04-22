@@ -2,7 +2,7 @@
 
 # Default API settings
 DEFAULT_TIMEOUT = 30  # seconds to wait for API response
-DEFAULT_MODEL = "llama3-8b-8192"
+DEFAULT_MODEL = "llama-3.1-8b-instant"
 DEFAULT_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 # Vulnerability detection sensitivity
@@ -16,5 +16,5 @@ GENERATE_JSON = True
 
 # Scanner info
 SCANNER_NAME = "AI Model Security Scanner"
-SCANNER_VERSION = "1.0.0"
+SCANNER_VERSION = "2.00"
 SCANNER_AUTHOR = "Maryssa L | github.com/Gemz-AACT"
