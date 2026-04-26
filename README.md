@@ -5,7 +5,7 @@ in LLMs and AI APIs using dual-layer detection — rule-based pattern matching
 combined with semantic AI analysis.
 
 Built by [Maryssa L.](https://github.com/Gemz-AACT) — Ethical Hacker & 
-Aspiring AI Security Engineer.
+AI Security Engineer in training.
 
 ---
 
