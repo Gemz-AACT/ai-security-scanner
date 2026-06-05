@@ -1,0 +1,59 @@
+name: AI Security Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_url:
+        description: 'Target AI API endpoint URL'
+        required: true
+        default: 'https://api.groq.com/openai/v1/chat/completions'
+      model:
+        description: 'Model name to test'
+        required: true
+        default: 'llama-3.1-8b-instant'
+      provider:
+        description: 'API provider (openai, anthropic, gemini, ollama)'
+        required: true
+        default: 'openai'
+      tests:
+        description: 'Tests to run (comma-separated or all)'
+        required: true
+        default: 'prompt-injection,jailbreak,system-prompt-extraction'
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Run AI Security Scan
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run AI Security Scanner
+        env:
+          SCAN_API_KEY: ${{ secrets.SCAN_API_KEY }}
+        run: |
+          python scanner/main.py \
+            --provider ${{ github.event.inputs.provider }} \
+            --api-url ${{ github.event.inputs.api_url }} \
+            --api-key $SCAN_API_KEY \
+            --model ${{ github.event.inputs.model }} \
+            --tests ${{ github.event.inputs.tests }}
+
+      - name: Upload scan report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ai-security-report
+          path: |
+            reports/*.pdf
+            reports/*.json
+          retention-days: 30
