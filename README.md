@@ -4,8 +4,7 @@ An automated AI security testing framework that identifies vulnerabilities
 in LLMs and AI APIs using dual-layer detection — rule-based pattern matching
 combined with semantic AI analysis.
 
-Built by [Maryssa L.](https://github.com/Gemz-AACT) — Ethical Hacker &
-AI Security Engineer.
+Built by [Maryssa L.](https://github.com/Gemz-AACT) — Ethical Hacker & AI Security Engineer.
 
 ---
 
@@ -30,7 +29,7 @@ showing exactly where the AI is vulnerable and how serious each weakness is.
 - 🔓 **Jailbreak Testing** — detects safety guideline bypasses
 - 🧠 **Semantic AI Layer** — uses LLaMA to analyze responses for subtle vulnerabilities rules would miss
 - 🌐 **Multi-Provider Support** — works with OpenAI, Anthropic, Gemini, and Ollama
-- 📦 **Custom Payload Loader** — drop in your own `.json` payload files per test
+- 📦 **Custom Payload Loader** — drop in your own .json payload files per test
 - 📊 **CVSS-Style Risk Scoring** — every finding scored 0-100 with severity rating
 - 🎯 **Confidence Ratings** — shows how certain the scanner is about each finding
 - 📄 **Professional PDF Reports** — detailed reports readable by technical and non-technical audiences
@@ -56,8 +55,7 @@ showing exactly where the AI is vulnerable and how serious each weakness is.
 git clone https://github.com/Gemz-AACT/ai-security-scanner
 cd ai-security-scanner
 python3 -m venv venv
-source venv/bin/activate  # Mac/Linux
-venv\Scripts\activate     # Windows
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -67,41 +65,22 @@ pip install -r requirements.txt
 
 **Standard scan (all 8 test modules):**
 ```bash
-python scanner/main.py \
-  --provider openai \
-  --api-url YOUR_API_ENDPOINT \
-  --api-key YOUR_API_KEY \
-  --model YOUR_MODEL_NAME
+python scanner/main.py --provider openai --api-url YOUR_API_ENDPOINT --api-key YOUR_API_KEY --model YOUR_MODEL_NAME
 ```
 
 **Run specific tests only:**
 ```bash
-python scanner/main.py \
-  --provider openai \
-  --api-url YOUR_API_ENDPOINT \
-  --api-key YOUR_API_KEY \
-  --model YOUR_MODEL_NAME \
-  --tests prompt-injection,jailbreak,system-prompt-extraction
+python scanner/main.py --provider openai --api-url YOUR_API_ENDPOINT --api-key YOUR_API_KEY --model YOUR_MODEL_NAME --tests prompt-injection,jailbreak,system-prompt-extraction
 ```
 
-**Verbose scan (shows full AI responses):**
+**Verbose scan:**
 ```bash
-python scanner/main.py \
-  --provider openai \
-  --api-url YOUR_API_ENDPOINT \
-  --api-key YOUR_API_KEY \
-  --model YOUR_MODEL_NAME \
-  --verbose
+python scanner/main.py --provider openai --api-url YOUR_API_ENDPOINT --api-key YOUR_API_KEY --model YOUR_MODEL_NAME --verbose
 ```
 
-**Use custom payloads for a specific program:**
+**Custom payloads:**
 ```bash
-python scanner/main.py \
-  --provider openai \
-  --api-url YOUR_API_ENDPOINT \
-  --api-key YOUR_API_KEY \
-  --model YOUR_MODEL_NAME \
-  --payloads-dir ./my-custom-payloads/
+python scanner/main.py --provider openai --api-url YOUR_API_ENDPOINT --api-key YOUR_API_KEY --model YOUR_MODEL_NAME --payloads-dir ./my-custom-payloads/
 ```
 
 ---
@@ -110,38 +89,22 @@ python scanner/main.py \
 
 **Groq (Free — recommended for testing):**
 ```bash
-python scanner/main.py \
-  --provider openai \
-  --api-url https://api.groq.com/openai/v1/chat/completions \
-  --api-key YOUR_GROQ_KEY \
-  --model llama-3.1-8b-instant
+python scanner/main.py --provider openai --api-url https://api.groq.com/openai/v1/chat/completions --api-key YOUR_GROQ_KEY --model llama-3.1-8b-instant
 ```
 
 **Anthropic Claude:**
 ```bash
-python scanner/main.py \
-  --provider anthropic \
-  --api-url https://api.anthropic.com/v1/messages \
-  --api-key YOUR_ANTHROPIC_KEY \
-  --model claude-haiku-4-5
+python scanner/main.py --provider anthropic --api-url https://api.anthropic.com/v1/messages --api-key YOUR_ANTHROPIC_KEY --model claude-haiku-4-5
 ```
 
 **Google Gemini:**
 ```bash
-python scanner/main.py \
-  --provider gemini \
-  --api-url https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent \
-  --api-key YOUR_GEMINI_KEY \
-  --model gemini-2.0-flash
+python scanner/main.py --provider gemini --api-url https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent --api-key YOUR_GEMINI_KEY --model gemini-2.0-flash
 ```
 
 **Ollama (Local):**
 ```bash
-python scanner/main.py \
-  --provider ollama \
-  --api-url http://localhost:11434/api/chat \
-  --api-key local \
-  --model llama3.2
+python scanner/main.py --provider ollama --api-url http://localhost:11434/api/chat --api-key local --model llama3.2
 ```
 
 ---
@@ -163,16 +126,14 @@ python scanner/main.py \
 
 ## 📦 Custom Payloads
 
-Copy a template from `payloads/custom-templates/`, fill in your payloads,
-and point the scanner at your folder:
+Copy a template from `payloads/custom-templates/`, fill in your payloads, and point the scanner at your folder:
 
 ```bash
 cp payloads/custom-templates/jailbreak_custom.json my-payloads/jailbreak_myprogram.json
-# Edit the file with your custom payloads
 python scanner/main.py --payloads-dir ./my-payloads/ ...
 ```
 
-The filename must contain the test key (e.g. `jailbreak`, `prompt-injection`) for auto-detection.
+The filename must contain the test key for auto-detection.
 
 ---
 
@@ -196,6 +157,7 @@ The report includes:
 ---
 
 ## 📁 Project Structure
+```
 ai-security-scanner/
 ├── scanner/
 │   ├── main.py
@@ -233,6 +195,8 @@ ai-security-scanner/
 ├── reports/
 ├── config.py
 └── requirements.txt
+...
+```
 ---
 
 ## 🔬 How It Works
@@ -251,8 +215,7 @@ that rules would miss.
 
 **Layer 3 — Score Combination:**
 Rule score (40% weight) + Semantic score (60% weight) = Final risk score.
-If both layers agree — confidence goes up. If they disagree — the more
-severe finding wins.
+If both layers agree — confidence goes up. If they disagree — the more severe finding wins.
 
 ---
 
