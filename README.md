@@ -219,6 +219,25 @@ If both layers agree — confidence goes up. If they disagree — the more sever
 
 ---
 
+## 🛡️ OWASP LLM Top 10 (2025) Mapping
+
+Every finding is automatically tagged to the [OWASP LLM Top 10 (2025)](https://genai.owasp.org/llm-top-10/) — the industry standard for AI security vulnerabilities.
+
+| Our Test | OWASP ID | Vulnerability |
+|---|---|---|
+| Prompt Injection | LLM01 | Prompt Injection |
+| Indirect Prompt Injection | LLM01 | Prompt Injection |
+| Jailbreak | LLM01 / LLM06 | Prompt Injection / Excessive Agency |
+| System Prompt Extraction | LLM07 | System Prompt Leakage |
+| Data Leakage | LLM02 | Sensitive Information Disclosure |
+| Training Data Extraction | LLM02 | Sensitive Information Disclosure |
+| Insecure Output Handling | LLM05 | Improper Output Handling |
+| Model DoS | LLM10 | Unbounded Consumption |
+
+OWASP IDs appear in every finding in the PDF report and JSON output.
+
+---
+
 ## ⚠️ Disclaimer
 
 This tool is for **authorized security testing only**. Only use against
