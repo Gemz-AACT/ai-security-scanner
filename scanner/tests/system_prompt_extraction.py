@@ -51,7 +51,7 @@ def run_test(provider, api_url, api_key, model, verbose=False, custom_payloads=N
             print(f"  [{status}] [{final_result['severity']}] [{final_result['confidence']}% confidence] | {payload[:50]}...")
             print(f"    Reason: {final_result['reason']}")
 
-            time.sleep(3)
+            time.sleep(8)
 
         except Exception as e:
             print(f"  [ERROR] Test failed for payload: {payload[:50]}... | {e}")

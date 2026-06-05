@@ -36,6 +36,59 @@ TEST_TYPE_MULTIPLIERS = {
 # Confidence thresholds
 # Higher confidence = higher final score
 CONFIDENCE_WEIGHT = 0.2  # 20% of score comes from confidence
+# OWASP LLM Top 10 (2025) mapping for each test type
+OWASP_MAPPING = {
+    "Prompt Injection": {
+        "id": "LLM01",
+        "name": "Prompt Injection",
+        "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+    },
+    "Indirect Prompt Injection": {
+        "id": "LLM01",
+        "name": "Prompt Injection",
+        "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+    },
+    "Jailbreak": {
+        "id": "LLM01 / LLM06",
+        "name": "Prompt Injection / Excessive Agency",
+        "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+    },
+    "System Prompt Extraction": {
+        "id": "LLM07",
+        "name": "System Prompt Leakage",
+        "url": "https://genai.owasp.org/llmrisk/llm07-system-prompt-leakage/"
+    },
+    "Data Leakage": {
+        "id": "LLM02",
+        "name": "Sensitive Information Disclosure",
+        "url": "https://genai.owasp.org/llmrisk/llm02-sensitive-information-disclosure/"
+    },
+    "Training Data Extraction": {
+        "id": "LLM02",
+        "name": "Sensitive Information Disclosure",
+        "url": "https://genai.owasp.org/llmrisk/llm02-sensitive-information-disclosure/"
+    },
+    "Insecure Output Handling": {
+        "id": "LLM05",
+        "name": "Improper Output Handling",
+        "url": "https://genai.owasp.org/llmrisk/llm05-improper-output-handling/"
+    },
+    "Model DoS": {
+        "id": "LLM10",
+        "name": "Unbounded Consumption",
+        "url": "https://genai.owasp.org/llmrisk/llm10-unbounded-consumption/"
+    },
+}
+
+def get_owasp(test_type):
+    """Returns OWASP LLM Top 10 (2025) mapping for a given test type."""
+    return OWASP_MAPPING.get(test_type, {
+        "id": "N/A",
+        "name": "N/A",
+        "url": ""
+    })
+
+
 
 
 def calculate_finding_score(finding):
@@ -161,11 +214,18 @@ def generate_score_breakdown(results, target_info=None):
     - Breakdown by test type
     - Top 3 most critical findings
     """
-    # Score each finding
+    # Score each finding and tag with OWASP mapping
     scored_results = []
     for finding in results:
         score = calculate_finding_score(finding)
-        scored_finding = {**finding, "score": score}
+        owasp = get_owasp(finding.get("test", ""))
+        scored_finding = {
+            **finding,
+            "score": score,
+            "owasp_id":   owasp["id"],
+            "owasp_name": owasp["name"],
+            "owasp_url":  owasp["url"],
+        }
         scored_results.append(scored_finding)
     
     # Overall score

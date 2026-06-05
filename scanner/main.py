@@ -269,7 +269,10 @@ def main():
         for scored in score_data["scored_results"]:
             if (result["payload"] == scored["payload"] and
                     result["test"] == scored["test"]):
-                result["score"] = scored.get("score", 0)
+                result["score"]      = scored.get("score", 0)
+                result["owasp_id"]   = scored.get("owasp_id", "N/A")
+                result["owasp_name"] = scored.get("owasp_name", "N/A")
+                result["owasp_url"]  = scored.get("owasp_url", "")
                 break
 
     if config.GENERATE_JSON:

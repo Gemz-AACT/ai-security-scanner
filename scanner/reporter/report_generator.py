@@ -314,6 +314,69 @@ def generate_report(results, timestamp, score_data=None):
                 f"<b>Finding:</b> {finding.get('reason', 'N/A')}", small_style))
             story.append(Spacer(1, 6))
 
+
+    # ── OWASP LLM TOP 10 (2025) MAPPING ────────────────
+    story.append(Paragraph("OWASP LLM Top 10 (2025) Coverage", heading_style))
+    story.append(Paragraph(
+        "The table below maps each finding to the OWASP LLM Top 10 (2025) — "
+        "the industry standard for AI security vulnerabilities.",
+        normal_style))
+    story.append(Spacer(1, 6))
+
+    # Build OWASP summary from results
+    owasp_hits = {}
+    for r in results:
+        oid   = r.get("owasp_id", "N/A")
+        oname = r.get("owasp_name", "N/A")
+        ourl  = r.get("owasp_url", "")
+        if oid == "N/A":
+            continue
+        key = oid
+        if key not in owasp_hits:
+            owasp_hits[key] = {
+                "id": oid, "name": oname, "url": ourl,
+                "total": 0, "vulnerable": 0, "max_score": 0
+            }
+        owasp_hits[key]["total"] += 1
+        if r.get("vulnerable"):
+            owasp_hits[key]["vulnerable"] += 1
+            score = r.get("score", 0)
+            if score > owasp_hits[key]["max_score"]:
+                owasp_hits[key]["max_score"] = score
+
+    ws = ParagraphStyle("wrap", parent=styles["Normal"], fontSize=8)
+
+    owasp_table_data = [["OWASP ID", "Vulnerability Name", "Tests Run", "Vulnerable", "Max Score", "Status"]]
+    for key, data in sorted(owasp_hits.items()):
+        status = "⚠ FINDINGS" if data["vulnerable"] > 0 else "✓ PASSED"
+        status_color = "#CC0000" if data["vulnerable"] > 0 else "#00AA00"
+        owasp_table_data.append([
+            data["id"],
+            Paragraph(data["name"], ws),
+            str(data["total"]),
+            str(data["vulnerable"]),
+            str(data["max_score"]),
+            Paragraph(f"<font color='{status_color}'><b>{status}</b></font>", ws),
+        ])
+
+    owasp_table = Table(owasp_table_data, colWidths=[60, 160, 55, 60, 60, 70])
+    owasp_table.setStyle(TableStyle([
+        ("BACKGROUND",   (0, 0), (-1, 0), colors.HexColor("#1A3A5C")),
+        ("TEXTCOLOR",    (0, 0), (-1, 0), colors.white),
+        ("FONTNAME",     (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE",     (0, 0), (-1, 0), 8),
+        ("FONTSIZE",     (0, 1), (-1, -1), 8),
+        ("BACKGROUND",   (0, 1), (-1, -1), colors.white),
+        ("GRID",         (0, 0), (-1, -1), 0.5, colors.grey),
+        ("VALIGN",       (0, 0), (-1, -1), "MIDDLE"),
+        ("ALIGN",        (0, 0), (0, -1), "CENTER"),
+        ("ALIGN",        (2, 0), (4, -1), "CENTER"),
+        ("TOPPADDING",   (0, 0), (-1, -1), 5),
+        ("BOTTOMPADDING",(0, 0), (-1, -1), 5),
+    ]))
+    story.append(owasp_table)
+    story.append(Spacer(1, 12))
+
     # ── DETAILED RESULTS ─────────────────────────────────
     story.append(Paragraph("Detailed Test Results", heading_style))
     story.append(Paragraph(
@@ -323,7 +386,7 @@ def generate_report(results, timestamp, score_data=None):
     story.append(Spacer(1, 6))
 
     detail_data = [[
-        "Test Type", "Payload Used", "Status",
+        "Test Type", "OWASP 2025", "Payload Used", "Status",
         "Severity", "Score\n(/100)", "Confidence", "Detailed Finding"
     ]]
 
@@ -335,8 +398,12 @@ def generate_report(results, timestamp, score_data=None):
         else:
             status = "SECURE\nNo Issues Found"
 
+        owasp_id   = r.get("owasp_id", "N/A")
+        owasp_name = r.get("owasp_name", "N/A")
+        owasp_cell = Paragraph(f"{owasp_id}\n{owasp_name}", small_style)
         detail_data.append([
             Paragraph(r["test"], small_style),
+            owasp_cell,
             Paragraph(r["payload"], small_style),
             status,
             r.get("severity", "NONE"),
@@ -347,7 +414,7 @@ def generate_report(results, timestamp, score_data=None):
 
     detail_table = Table(
         detail_data,
-        colWidths=[90, 90, 70, 45, 35, 45, 130]
+        colWidths=[75, 65, 75, 60, 40, 30, 40, 120]
     )
     detail_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor('#1A3A5C')),
