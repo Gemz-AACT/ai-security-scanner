@@ -129,6 +129,7 @@ ai-security-scanner/
 ├── reports/
 ├── config.py
 └── requirements.txt
+...
 ```
 
 ## 🔬 How It Works
