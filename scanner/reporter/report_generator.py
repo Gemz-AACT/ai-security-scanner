@@ -336,7 +336,7 @@ def generate_report(results, timestamp, score_data=None):
             status = "SECURE\nNo Issues Found"
 
         detail_data.append([
-            r["test"],
+            Paragraph(r["test"], small_style),
             Paragraph(r["payload"], small_style),
             status,
             r.get("severity", "NONE"),
@@ -347,7 +347,7 @@ def generate_report(results, timestamp, score_data=None):
 
     detail_table = Table(
         detail_data,
-        colWidths=[75, 100, 70, 45, 35, 50, 130]
+        colWidths=[90, 90, 70, 45, 35, 45, 130]
     )
     detail_table.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor('#1A3A5C')),

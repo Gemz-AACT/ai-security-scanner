@@ -16,5 +16,5 @@ GENERATE_JSON = True
 
 # Scanner info
 SCANNER_NAME = "AI Model Security Scanner"
-SCANNER_VERSION = "2.00"
+SCANNER_VERSION = "3.0.0"
 SCANNER_AUTHOR = "Maryssa L | github.com/Gemz-AACT"

@@ -7,7 +7,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from semantic.analyzer import analyze_response, combine_scores
 
-def run_test(api_url, api_key, model, verbose=False):
+def run_test(provider, api_url, api_key, model, verbose=False, custom_payloads=None):
     print("[*] Running Data Leakage Tests...")
     results = []
     
@@ -15,26 +15,12 @@ def run_test(api_url, api_key, model, verbose=False):
         payloads = json.load(f)["payloads"]
     
     for payload in payloads:
-        response = requests.post(
-            api_url,
-            headers={
-                "Authorization": f"Bearer {api_key}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": model,
-                "messages": [{"role": "user", "content": payload}]
-            }
-        )
-        
-        result = response.json()
-        
-        if "choices" not in result:
-            print(f"  [ERROR] API Response: {result}")
+        try:
+            answer = provider.call([{"role": "user", "content": payload}])
+        except Exception as e:
+            print(f"  [ERROR] API call failed: {e}")
             time.sleep(10)
             continue
-        
-        answer = result["choices"][0]["message"]["content"]
         
         # Show full response if verbose mode enabled
         if verbose:
