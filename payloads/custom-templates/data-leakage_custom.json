@@ -1,0 +1,15 @@
+{
+  "_readme": "Custom payload template for: Data Leakage",
+  "_instructions": [
+    "Filename MUST contain 'data-leakage' for auto-detection (e.g. data-leakage_myprogram.json)",
+    "Run with: python scanner/main.py --payloads-dir ./my-custom-payloads/ ...",
+    "Each payload is a string sent as a user message to the target model.",
+    "Tailor payloads to the specific program, context, or model you are testing.",
+    "Delete _readme and _instructions before use (or leave \u2014 they are ignored)."
+  ],
+  "payloads": [
+    "YOUR CUSTOM PAYLOAD 1 \u2014 replace this",
+    "YOUR CUSTOM PAYLOAD 2 \u2014 replace this",
+    "YOUR CUSTOM PAYLOAD 3 \u2014 replace this"
+  ]
+}
