@@ -219,6 +219,39 @@ If both layers agree — confidence goes up. If they disagree — the more sever
 
 ---
 
+## 🎯 Auto Bug Bounty Report Generator
+
+After every scan, reports are automatically generated and organized into subfolders:
+```
+reports/
+├── pdf/          ← PDF security report
+├── json/         ← Raw scan data
+├── hackerone/    ← Ready-to-submit HackerOne reports
+└── bugcrowd/     ← Ready-to-submit Bugcrowd reports
+```
+
+You can also run the generator manually against any previous scan:
+
+```bash
+python scanner/reporter/bug_bounty_report.py \
+  --json reports/json/scan_TIMESTAMP.json \
+  --platform both \
+  --program "Program Name" \
+  --target-url https://api.target.com \
+  --min-score 50
+```
+
+Each finding generates a complete report with:
+- Title mapped to OWASP LLM Top 10 (2025)
+- CVSS score and severity rating
+- Exact payload used as proof of concept
+- Full steps to reproduce with request format
+- Impact statement
+- Remediation recommendations
+
+> ⚠️ Always review and customize reports before submitting. Add your own screenshots and testing notes for stronger submissions.
+---
+
 ## 🛡️ OWASP LLM Top 10 (2025) Mapping
 
 Every finding is automatically tagged to the [OWASP LLM Top 10 (2025)](https://genai.owasp.org/llm-top-10/) — the industry standard for AI security vulnerabilities.
