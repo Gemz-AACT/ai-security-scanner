@@ -238,6 +238,30 @@ OWASP IDs appear in every finding in the PDF report and JSON output.
 
 ---
 
+## 🤖 GitHub Actions CI
+
+Run the scanner automatically from GitHub — no local setup needed.
+
+1. Go to the **Actions** tab in this repo
+2. Click **AI Security Scan** → **Run workflow**
+3. Fill in your target API details
+4. Download the PDF report from the **Artifacts** section when complete
+
+The workflow requires a `SCAN_API_KEY` secret set in your repo settings with your API key.
+
+```yaml
+# Triggered manually via GitHub Actions UI
+on:
+  workflow_dispatch:
+    inputs:
+      api_url:    # Target AI API endpoint
+      model:      # Model name to test
+      provider:   # openai | anthropic | gemini | ollama
+      tests:      # comma-separated test keys or 'all'
+```
+
+---
+
 ## ⚠️ Disclaimer
 
 This tool is for **authorized security testing only**. Only use against
