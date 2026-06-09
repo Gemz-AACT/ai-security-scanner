@@ -13,6 +13,7 @@ import sys
 import os
 import time
 import glob
+import shutil
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -280,6 +281,64 @@ def main():
 
     if config.GENERATE_PDF:
         generate_report(all_results, timestamp, score_data)
+
+    # Organize output into subfolders
+    report_dir = config.REPORT_OUTPUT_DIR if config.REPORT_OUTPUT_DIR.endswith("/") else config.REPORT_OUTPUT_DIR + "/"
+    os.makedirs(f"{report_dir}pdf", exist_ok=True)
+    os.makedirs(f"{report_dir}json", exist_ok=True)
+    os.makedirs(f"{report_dir}hackerone", exist_ok=True)
+    os.makedirs(f"{report_dir}bugcrowd", exist_ok=True)
+
+    # Move PDF and JSON into subfolders
+    pdf_src  = f"{report_dir}AI_Security_Report_{timestamp}.pdf"
+    json_src = f"{report_dir}scan_{timestamp}.json"
+
+    if os.path.exists(pdf_src):
+        shutil.move(pdf_src,  f"{report_dir}pdf/AI_Security_Report_{timestamp}.pdf")
+        console.print(f"[green][+] PDF report saved to reports/pdf/[/green]")
+
+    if os.path.exists(json_src):
+        shutil.move(json_src, f"{report_dir}json/scan_{timestamp}.json")
+        console.print(f"[green][+] JSON report saved to reports/json/[/green]")
+
+    # Auto-generate bug bounty reports
+    json_final = f"{report_dir}json/scan_{timestamp}.json"
+    if os.path.exists(json_final):
+        console.print("\n[bold yellow][*] Generating bug bounty reports...[/bold yellow]")
+        try:
+            from reporter.bug_bounty_report import load_scan_results, generate_hackerone_report, generate_bugcrowd_report
+            import datetime as dt
+
+            bb_data     = load_scan_results(json_final)
+            bb_results  = bb_data.get("scored_results", bb_data) if isinstance(bb_data, dict) else bb_data
+            bb_findings = sorted(
+                [r for r in bb_results if r.get("vulnerable") and r.get("score", 0) >= 50],
+                key=lambda x: x.get("score", 0), reverse=True
+            )
+
+            target_url  = target_info.get("api_url", "N/A")
+
+            if bb_findings:
+                h1_path = f"{report_dir}hackerone/hackerone_report_{timestamp}.txt"
+                bc_path = f"{report_dir}bugcrowd/bugcrowd_report_{timestamp}.txt"
+
+                with open(h1_path, "w") as f:
+                    f.write(f"HACKERONE BUG BOUNTY REPORTS\nGenerated: {timestamp}\nTarget: {target_url}\nTotal Findings: {len(bb_findings)}\n" + "="*80 + "\n\n")
+                    for i, finding in enumerate(bb_findings, 1):
+                        f.write(generate_hackerone_report(finding, "Target Program", target_url, i))
+
+                with open(bc_path, "w") as f:
+                    f.write(f"BUGCROWD BUG BOUNTY REPORTS\nGenerated: {timestamp}\nTarget: {target_url}\nTotal Findings: {len(bb_findings)}\n" + "="*80 + "\n\n")
+                    for i, finding in enumerate(bb_findings, 1):
+                        f.write(generate_bugcrowd_report(finding, "Target Program", target_url, i))
+
+                console.print(f"[green][+] HackerOne report saved to reports/hackerone/[/green]")
+                console.print(f"[green][+] Bugcrowd report saved to reports/bugcrowd/[/green]")
+                console.print(f"[cyan][*] {len(bb_findings)} findings exported — review before submitting[/cyan]")
+            else:
+                console.print("[yellow][*] No findings above score threshold for bug bounty reports[/yellow]")
+        except Exception as e:
+            console.print(f"[yellow][!] Bug bounty report generation failed: {e}[/yellow]")
 
     console.print("\n[bold green][+] Scan complete![/bold green]")
 
